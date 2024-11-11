@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from 'react';
-const URL = 'https://[2407:7000:9bfa:a600:c09:b964:4cfc:d4e0]/';
+
+const URL = 'https://mrapple-backend.overlord-loki.com/';  // Your API base URL
+
 const Dashboard = () => {
     const [orders, setOrders] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [productId, setProductId] = useState<number>(0);
     const [quantity, setQuantity] = useState<number>(1);
-    const [makingOrder, setMakingOrder] = useState<boolean>(false); // Track if the form is being submitted
-    const [products, setProducts] = useState<any[]>([]); // Store products
-    const userId = 3; // Set the user ID as per your requirements or authentication state
+    const [makingOrder, setMakingOrder] = useState<boolean>(false);
+    const [products, setProducts] = useState<any[]>([]);
+    const userId = 1;
 
     // Fetch orders for the user
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await fetch(`${URL}api/orders/user/${userId}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch orders');
-                }
-
+                const response = await fetch(`${URL}orders/user/${userId}`);
+                if (!response.ok) throw new Error('Failed to fetch orders');
+                
                 const data = await response.json();
-                setOrders(data);  // Update the state with fetched orders
+                setOrders(data);
             } catch (error: any) {
                 setError(error.message);
             }
@@ -32,13 +32,11 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch(`${URL}api/products`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch products');
-                }
-
+                const response = await fetch(`${URL}products`);
+                if (!response.ok) throw new Error('Failed to fetch products');
+                
                 const data = await response.json();
-                setProducts(data);  // Update the state with fetched products
+                setProducts(data);
             } catch (error: any) {
                 setError(error.message);
             }
@@ -49,15 +47,12 @@ const Dashboard = () => {
 
     const handleDeleteOrder = async (orderId: number) => {
         try {
-            const response = await fetch(`${URL}api/orders/${orderId}`, {
+            const response = await fetch(`${URL}orders/delete/${orderId}`, {
                 method: 'DELETE',
             });
+            if (!response.ok) throw new Error('Failed to delete order');
 
-            if (!response.ok) {
-                throw new Error('Failed to delete order');
-            }
-
-            setOrders(orders.filter(order => order.orderId !== orderId));
+            setOrders(orders.filter(order => order.order_id !== orderId));
         } catch (error: any) {
             alert(error.message);
         }
@@ -67,7 +62,6 @@ const Dashboard = () => {
         e.preventDefault();
         setMakingOrder(true);
 
-        // Ensure the product is correctly selected
         const selectedProduct = products.find(p => p.productId === productId);
         if (!selectedProduct) {
             alert("Please select a valid product.");
@@ -76,36 +70,32 @@ const Dashboard = () => {
         }
 
         const newOrder = {
-            userId,
-            orderDate: new Date().toISOString(),  // Use the current date and time
-            status: 'Pending',  // Default status
-            totalAmount: quantity * selectedProduct.price,  // Calculate total amount using correct price
-            orderItems: [
+            user_id: userId,
+            order_date: new Date().toISOString(),
+            status: 'pending',
+            total_amount: quantity * selectedProduct.price,
+            order_items: [
                 {
-                    productId,
+                    product_id: productId,
                     quantity,
-                    priceEach: selectedProduct.price,  // Use correct price for each order item
+                    price_each: selectedProduct.price,
                 },
             ],
         };
 
         try {
-            const response = await fetch(`${URL}api/orders/create`, {
+            const response = await fetch(`${URL}orders/create`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newOrder),
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to create order');
-            }
-
+            if (!response.ok) throw new Error('Failed to create order');
+            
             const createdOrder = await response.json();
-            setOrders((prevOrders) => [...prevOrders, createdOrder]); // Add new order to the state
-            setProductId(0); // Reset product ID
-            setQuantity(1);  // Reset quantity
+            setOrders((prevOrders) => [...prevOrders, createdOrder]);
+            setProductId(0);
+            setQuantity(1);
         } catch (error: any) {
             alert(error.message);
         } finally {
@@ -126,20 +116,20 @@ const Dashboard = () => {
                         {/* Product Selection */}
                         <div>
                             <label htmlFor="productId" className="block text-sm">Product</label>
-                            <select
-                                id="productId"
-                                value={productId}
-                                onChange={(e) => setProductId(Number(e.target.value))}
-                                className="w-full p-2 border border-gray-300 rounded"
-                                required
-                            >
-                                <option value={0}>Select a product</option>
-                                {products.map((product) => (
-                                    <option key={product.productId} value={product.productId}>
-                                        {product.productName} - ${product.price}
-                                    </option>
-                                ))}
-                            </select>
+                          <select
+                              id="productId"
+                              value={productId}
+                              onChange={(e) => setProductId(Number(e.target.value))}
+                              className="w-full p-2 border border-gray-300 rounded"
+                              required
+                          >
+                              <option value={0}>Select a product</option>
+                              {products.map((product) => (
+                                  <option key={product.productId} value={product.productId}>
+                                      {product.productName} - ${product.price}
+                                  </option>
+                              ))}
+                          </select>
                         </div>
 
                         {/* Quantity Input */}
@@ -174,12 +164,12 @@ const Dashboard = () => {
                     <p>No orders found</p>
                 ) : (
                     orders.map((order) => (
-                        <div key={order.orderId} className="border p-4 rounded shadow-md">
-                            <h3 className="font-bold">Order ID: {order.orderId}</h3>
+                        <div key={order.order_id} className="border p-4 rounded shadow-md">
+                            <h3 className="font-bold">Order ID: {order.order_id}</h3>
                             <p>Status: {order.status}</p>
-                            <p>Total Amount: ${order.totalAmount}</p>
+                            <p>Total Amount: ${order.total_amount}</p>
                             <button
-                                onClick={() => handleDeleteOrder(order.orderId)}
+                                onClick={() => handleDeleteOrder(order.order_id)}
                                 className="mt-2 bg-red-500 text-white py-1 px-3 rounded"
                             >
                                 Delete Order

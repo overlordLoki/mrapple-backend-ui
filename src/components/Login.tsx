@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-const URL = 'https://[2407:7000:9bfa:a600:c09:b964:4cfc:d4e0]/';
+const URL = 'https://mrapple-backend.overlord-loki.com/';  // Your API base URL
+
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -8,36 +9,37 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        try {
-            const response = await fetch(URL+'api/Login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ UserName: username, Password: password }),
-            });
-
-            // Check if the response is not ok (failure case)
-            if (!response.ok) {
-                const errorMessage = await response.text(); // Handle plain text error messages
-                setErrorMessage(errorMessage || 'Login failed');
-                return;
-            }
-
-            // If response is OK, handle the success case
-            const data = await response.text(); // Expect plain text for success message
-            if (data === 'Login successful.') {
-                navigate('/dashboard');
-            } else {
-                setErrorMessage('Login failed');
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-            setErrorMessage('An error occurred. Please try again.'); // Handle errors like network failure
-        }
-    };
+      e.preventDefault();
+  
+      try {
+          const response = await fetch(URL + 'login', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ user_name: username, password: password }), // Ensure the correct keys
+          });
+  
+          // Check if the response is not ok (failure case)
+          if (!response.ok) {
+              const errorMessage = await response.text(); // Handle plain text error messages
+              setErrorMessage(errorMessage || 'Login failed');
+              return;
+          }
+  
+          // If response is OK, handle the success case
+          const data = await response.json(); // Expecting JSON for success message
+          if (data.message === 'Login successful') {  // Check the `message` field
+              navigate('/dashboard');
+          } else {
+              setErrorMessage('Login failed');
+          }
+      } catch (error) {
+          console.error('Login error:', error);
+          setErrorMessage('An error occurred. Please try again.'); // Handle errors like network failure
+      }
+  };
+  
 
     return (
         <div className="max-w-md mx-auto mt-10">

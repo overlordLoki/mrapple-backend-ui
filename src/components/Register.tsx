@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-const URL = 'https://[2407:7000:9bfa:a600:c09:b964:4cfc:d4e0]/';
+const URL = 'https://mrapple-backend.overlord-loki.com/';
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -11,7 +11,7 @@ const Register = () => {
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         // Add registration API logic here
-        const response = await fetch(URL+'api/Register', {
+        const response = await fetch(URL+'Register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
