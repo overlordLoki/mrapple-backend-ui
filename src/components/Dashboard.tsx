@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+const URL = 'https://[2407:7000:9bfa:a600:c09:b964:4cfc:d4e0]/';
 const Dashboard = () => {
     const [orders, setOrders] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -13,7 +13,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await fetch(`https://localhost:8080/api/orders/user/${userId}`);
+                const response = await fetch(`${URL}api/orders/user/${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch orders');
                 }
@@ -32,7 +32,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('https://localhost:8080/api/products');
+                const response = await fetch(`${URL}api/products`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch products');
                 }
@@ -49,7 +49,7 @@ const Dashboard = () => {
 
     const handleDeleteOrder = async (orderId: number) => {
         try {
-            const response = await fetch(`https://localhost:8080/api/orders/${orderId}`, {
+            const response = await fetch(`${URL}api/orders/${orderId}`, {
                 method: 'DELETE',
             });
 
@@ -90,7 +90,7 @@ const Dashboard = () => {
         };
 
         try {
-            const response = await fetch('https://localhost:8080/api/orders/create', {
+            const response = await fetch(`${URL}api/orders/create`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
