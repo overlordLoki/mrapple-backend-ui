@@ -114,15 +114,11 @@ const Dashboard = () => {
 
     return (
         <div className="min-h-screen bg-cover bg-center p-6">
-            <h2 className="text-4xl font-bold text-white text-center mb-8 drop-shadow-lg" style={{ textShadow: '2px 2px 5px black' }}>
-                Dashboard
-            </h2>
-
             {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
             {/* Create Order Form */}
             <div className="max-w-3xl mx-auto bg-white p-8 rounded shadow-md mb-6">
-                <h3 className="font-bold text-2xl text-center mb-6">Create New Order</h3>
+                <h3 className="font-bold text-3xl text-center mb-6">Create New Order</h3> {/* Title size increased */}
                 <form onSubmit={handleCreateOrder}>
                     <div className="space-y-4">
                         <div>
@@ -182,7 +178,7 @@ const Dashboard = () => {
                             <div className="flex space-x-4">
                                 <button
                                     onClick={() => handleViewInvoice(order)}
-                                    className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
+                                    className="bg-green-800 text-white py-1 px-3 rounded hover:bg-green-700"
                                 >
                                     View Invoice
                                 </button>
