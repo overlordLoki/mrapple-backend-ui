@@ -1,26 +1,26 @@
-
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Register from './components/Register';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
+import Register from './components/Register';
+import ForgotPassword from './components/ForgotPassword'; 
+import './index.css'; 
 
 const App = () => {
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-100">
-        <header className="bg-blue-500 text-white py-4">
-          <h1 className="text-center text-2xl font-bold">My App</h1>
-        </header>
-        <main className="py-8">
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <div 
+      className="min-h-screen bg-cover bg-center" 
+      style={{ backgroundImage: 'url("https://images.squarespace-cdn.com/content/v1/6541874d1e536d4a5a63bc9e/427caf30-d00d-4088-835b-2f6be1b3dfc4/Bostock-Apple-Harvest-Royal-Gala-070.jpg")' }}
+    >
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} /> {/* Add this route */}
+        </Routes>
+      </Router>
+    </div>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import InvoiceModal from './InvoiceModal'; // Import the Invoice Modal Component
 
 const URL = 'https://mrapple-backend.overlord-loki.com/';  // Your API base URL
 
@@ -9,9 +10,10 @@ const Dashboard = () => {
     const [quantity, setQuantity] = useState<number>(1);
     const [makingOrder, setMakingOrder] = useState<boolean>(false);
     const [products, setProducts] = useState<any[]>([]);
+    const [showInvoice, setShowInvoice] = useState<boolean>(false);
+    const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
     const userId = 1;
 
-    // Fetch orders for the user
     useEffect(() => {
         const fetchOrders = async () => {
             try {
@@ -28,7 +30,6 @@ const Dashboard = () => {
         fetchOrders();
     }, [userId]);
 
-    // Fetch products for the order form
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -46,6 +47,9 @@ const Dashboard = () => {
     }, []);
 
     const handleDeleteOrder = async (orderId: number) => {
+        const confirmed = window.confirm('Are you sure you want to delete this order?');
+        if (!confirmed) return;
+
         try {
             const response = await fetch(`${URL}orders/delete/${orderId}`, {
                 method: 'DELETE',
@@ -103,36 +107,42 @@ const Dashboard = () => {
         }
     };
 
+    const handleViewInvoice = (order: any) => {
+        setSelectedOrder(order);
+        setShowInvoice(true);
+    };
+
     return (
-        <div className="max-w-3xl mx-auto mt-10">
-            <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
-            {error && <p className="text-red-500">{error}</p>}
+        <div className="min-h-screen bg-cover bg-center p-6">
+            <h2 className="text-4xl font-bold text-white text-center mb-8 drop-shadow-lg" style={{ textShadow: '2px 2px 5px black' }}>
+                Dashboard
+            </h2>
+
+            {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
             {/* Create Order Form */}
-            <div className="bg-gray-100 p-4 rounded mb-6">
-                <h3 className="font-bold text-lg">Create New Order</h3>
+            <div className="max-w-3xl mx-auto bg-white p-8 rounded shadow-md mb-6">
+                <h3 className="font-bold text-2xl text-center mb-6">Create New Order</h3>
                 <form onSubmit={handleCreateOrder}>
                     <div className="space-y-4">
-                        {/* Product Selection */}
                         <div>
                             <label htmlFor="productId" className="block text-sm">Product</label>
-                          <select
-                              id="productId"
-                              value={productId}
-                              onChange={(e) => setProductId(Number(e.target.value))}
-                              className="w-full p-2 border border-gray-300 rounded"
-                              required
-                          >
-                              <option value={0}>Select a product</option>
-                              {products.map((product) => (
-                                  <option key={product.productId} value={product.productId}>
-                                      {product.productName} - ${product.price}
-                                  </option>
-                              ))}
-                          </select>
+                            <select
+                                id="productId"
+                                value={productId}
+                                onChange={(e) => setProductId(Number(e.target.value))}
+                                className="w-full p-2 border border-gray-300 rounded mt-1"
+                                required
+                            >
+                                <option value={0}>Select a product</option>
+                                {products.map((product) => (
+                                    <option key={product.productId} value={product.productId}>
+                                        {product.productName} - ${product.price}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
-                        {/* Quantity Input */}
                         <div>
                             <label htmlFor="quantity" className="block text-sm">Quantity</label>
                             <input
@@ -140,17 +150,16 @@ const Dashboard = () => {
                                 id="quantity"
                                 value={quantity}
                                 onChange={(e) => setQuantity(Number(e.target.value))}
-                                className="w-full p-2 border border-gray-300 rounded"
+                                className="w-full p-2 border border-gray-300 rounded mt-1"
                                 min="1"
                                 required
                             />
                         </div>
 
-                        {/* Submit Button */}
                         <button
                             type="submit"
                             disabled={makingOrder}
-                            className={`w-full py-2 bg-blue-500 text-white rounded ${makingOrder ? 'opacity-50' : ''}`}
+                            className={`w-full py-2 bg-red-500 text-white rounded hover:bg-red-600 ${makingOrder ? 'opacity-50' : ''}`}
                         >
                             {makingOrder ? 'Creating Order...' : 'Create Order'}
                         </button>
@@ -159,25 +168,44 @@ const Dashboard = () => {
             </div>
 
             {/* Display Orders */}
-            <div className="space-y-4">
+            <div className="max-w-3xl mx-auto space-y-4">
                 {orders.length === 0 ? (
-                    <p>No orders found</p>
+                    <p className="text-center">No orders found</p>
                 ) : (
                     orders.map((order) => (
-                        <div key={order.order_id} className="border p-4 rounded shadow-md">
-                            <h3 className="font-bold">Order ID: {order.order_id}</h3>
-                            <p>Status: {order.status}</p>
-                            <p>Total Amount: ${order.total_amount}</p>
-                            <button
-                                onClick={() => handleDeleteOrder(order.order_id)}
-                                className="mt-2 bg-red-500 text-white py-1 px-3 rounded"
-                            >
-                                Delete Order
-                            </button>
+                        <div key={order.order_id} className="bg-white border border-gray-300 p-4 rounded shadow-md flex justify-between items-center">
+                            <div>
+                                <h3 className="font-bold">Order ID: {order.order_id}</h3>
+                                <p>Status: {order.status}</p>
+                                <p>Total Amount: ${order.total_amount}</p>
+                            </div>
+                            <div className="flex space-x-4">
+                                <button
+                                    onClick={() => handleViewInvoice(order)}
+                                    className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
+                                >
+                                    View Invoice
+                                </button>
+                                <button
+                                    onClick={() => handleDeleteOrder(order.order_id)}
+                                    className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
+                                >
+                                    Delete Order
+                                </button>
+                            </div>
                         </div>
                     ))
                 )}
             </div>
+
+            {/* Invoice Modal */}
+            {showInvoice && selectedOrder && (
+                <InvoiceModal 
+                    order={selectedOrder} 
+                    user={{ name: 'John Doe' }} 
+                    onClose={() => setShowInvoice(false)} 
+                />
+            )}
         </div>
     );
 };
