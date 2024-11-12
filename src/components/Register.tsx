@@ -23,11 +23,13 @@ const Register = () => {
 
             const data = await response.json();
 
-            if (data.success) {
+            if (response.ok) {
+                // Success response
                 setSuccessMessage('Registration successful! Redirecting to login...');
                 setTimeout(() => navigate('/login'), 2000);
             } else {
-                setErrorMessage(data.message || 'Registration failed. Please try again.');
+                // Error response
+                setErrorMessage(data.detail || 'Registration failed. Please try again.');
             }
         } catch (error) {
             console.error(error);

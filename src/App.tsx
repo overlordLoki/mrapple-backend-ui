@@ -3,15 +3,18 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Register from './components/Register';
 import ForgotPassword from './components/ForgotPassword';
-import './index.css'; 
+import './index.css';
+import { useEffect, useState } from 'react';
+
 const img = 'url("https://images.squarespace-cdn.com/content/v1/6541874d1e536d4a5a63bc9e/427caf30-d00d-4088-835b-2f6be1b3dfc4/Bostock-Apple-Harvest-Royal-Gala-070.jpg")';
 
 const NavigationBar = () => {
-  const navigate = useNavigate();  // useNavigate hook should be inside a functional component rendered by Router
+  const navigate = useNavigate();
 
   // Logout handler
   const handleLogout = () => {
     alert('You have successfully logged out.');
+    localStorage.removeItem('userId'); // Clear userId from localStorage
     navigate("/login");
   };
 
@@ -30,6 +33,15 @@ const NavigationBar = () => {
 };
 
 const App = () => {
+  const [userId, setUserId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const user = localStorage.getItem('userId');
+    if (user) {
+      setUserId(Number(user)); // If userId is found in localStorage, use it
+    }
+  }, []);
+
   return (
     <div 
       className="min-h-screen bg-cover bg-center" 
@@ -40,9 +52,9 @@ const App = () => {
         <NavigationBar />
 
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Login setUserId={setUserId} />} />
+          <Route path="/login" element={<Login setUserId={setUserId} />} />
+          <Route path="/dashboard" element={userId ? <Dashboard userId={userId} /> : <Login setUserId={setUserId} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>

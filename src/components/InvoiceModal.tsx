@@ -1,138 +1,110 @@
 import React from 'react';
+import { jsPDF } from 'jspdf';
+import { Order, OrderItem, User, Product } from './Types';
 
 interface InvoiceProps {
-    order: any;  // Define the shape of the order data
-    user: any;   // Define the shape of the user data
-    onClose: () => void;  // Function to close the modal
+    order: Order;
+    user: User;
+    onClose: () => void;
+    products: Product[];
 }
 
-const InvoiceModal: React.FC<InvoiceProps> = ({ order, user, onClose }) => {
-    // Check if order and user data are available
+const InvoiceModal: React.FC<InvoiceProps> = ({ order, user, onClose, products }) => {
     if (!order || !user) {
-        return <p>Loading...</p>;  // You can customize the loading message
+        return <p>Loading...</p>;
     }
 
-    const handlePrint = () => {
-        window.print();  // Opens the print dialog
+    const orderItems: OrderItem[] = order.items;
+    // Match product id with product name
+    const orderItemsWithName = orderItems.map((item) => {
+        const product = products.find(p => p.product_id === item.product_id);
+        return {
+            ...item,
+            product_name: product ? product.product_name : 'Unknown'
+        };
+    });
+
+    const handleSaveAsPDF = () => {
+        const doc = new jsPDF();
+
+        // Add invoice header
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Invoice: ${order.order_id}`, 20, 20);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`User: ${user.user_name}`, 20, 30);
+        doc.text(`Total Amount: $${order.total_amount.toFixed(2)}`, 20, 40);
+
+        // Add table headers
+        const startY = 50;
+        const colWidth = [50, 40, 40, 40, 40]; // Example column widths for the table
+        const rowHeight = 10;
+        const headers = ['Product', 'Quantity', 'Price Each', 'Total', 'GST (15%)'];
+        
+        // Header
+        headers.forEach((header, idx) => {
+            doc.text(header, 20 + colWidth[idx] * idx, startY);
+        });
+
+        // Add table rows
+        let yPos = startY + rowHeight;
+        orderItemsWithName.forEach((item) => {
+            doc.text(item.product_name, 20, yPos);
+            doc.text(`${item.quantity}`, 20 + colWidth[0], yPos);
+            doc.text(`$${item.price_each.toFixed(2)}`, 20 + colWidth[0] + colWidth[1], yPos);
+            doc.text(`$${(item.quantity * item.price_each).toFixed(2)}`, 20 + colWidth[0] + colWidth[1] + colWidth[2], yPos);
+            doc.text(`$${(item.quantity * item.price_each * 0.15).toFixed(2)}`, 20 + colWidth[0] + colWidth[1] + colWidth[2] + colWidth[3], yPos);
+            yPos += rowHeight;
+        });
+
+        // Save as PDF
+        doc.save(`Invoice_${order.order_id}.pdf`);
     };
 
-    // Function to save the invoice as PDF
-    const handleSaveAsPDF = () => {
-        // Create a new window with the invoice content
-        const printWindow = window.open('', '_blank');
-        if (!printWindow) {
-            alert('Please allow pop-ups to save the invoice as PDF.');
-            return;
-        }
-
-        // Set the content of the new window
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Invoice</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                        h2 { text-align: center; }
-                        .invoice-details { margin: 20px 0; }
-                        .invoice-details p { margin: 5px 0; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-                        th { background-color: #f2f2f2; }
-                        td { font-size: 14px; }
-                        .footer { margin-top: 30px; text-align: center; }
-                        .button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; }
-                        .button:hover { background-color: #45a049; }
-                    </style>
-                </head>
-                <body>
-                    <h2>Invoice</h2>
-                    <div class="invoice-details">
-                        <p><strong>Order Number:</strong> ${order.order_id}</p>
-                        <p><strong>User:</strong> ${user.name}</p>
-                        <p><strong>Total Amount:</strong> $${order.total_amount}</p>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Price Each</th>
-                                <th>Total</th>
-                                <th>GST</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${order.order_items.map((item: any) => `
-                                <tr>
-                                    <td>${item.product_name}</td>
-                                    <td>${item.quantity}</td>
-                                    <td>$${item.price_each}</td>
-                                    <td>$${(item.quantity * item.price_each).toFixed(2)}</td>
-                                    <td>$${(item.quantity * item.price_each * 0.15).toFixed(2)}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                    <div class="footer">
-                        <button class="button" onclick="window.print()">Print Invoice</button>
-                        <button class="button" onclick="window.print()">Save as PDF</button>
-                    </div>
-                </body>
-            </html>
-        `);
-
-        // Close the document after writing the content
-        printWindow.document.close();
-
-        // Save the document as PDF
-        printWindow.print();
-    }
-
     return (
-        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <div className="modal-content" style={{ background: 'white', padding: '20px', borderRadius: '8px', maxWidth: '800px', width: '100%' }}>
-                <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px' }}>Invoice</h2>
-                <div style={{ marginBottom: '16px' }}>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-lg max-w-2xl w-full shadow-lg">
+                <h2 className="text-2xl font-bold mb-4 text-center">Invoice</h2>
+
+                <div className="mb-4">
                     <p><strong>Order Number:</strong> {order.order_id}</p>
-                    <p><strong>User:</strong> {user.name}</p>
-                    <p><strong>Total Amount:</strong> ${order.total_amount}</p>
+                    <p><strong>User:</strong> {user.user_name}</p>
+                    <p><strong>Total Amount:</strong> ${order.total_amount.toFixed(2)}</p>
                 </div>
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+
+                <table className="w-full border-collapse mb-4">
                     <thead>
-                        <tr>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2' }}>Product</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2' }}>Quantity</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2' }}>Price Each</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2' }}>Total</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2' }}>GST</th>
+                        <tr className="bg-gray-200">
+                            <th className="border p-2 text-left">Product</th>
+                            <th className="border p-2 text-left">Quantity</th>
+                            <th className="border p-2 text-left">Price Each</th>
+                            <th className="border p-2 text-left">Total</th>
+                            <th className="border p-2 text-left">GST (15%)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {order.order_items && order.order_items.length > 0 ? (
-                            order.order_items.map((item: any, index: number) => (
+                        {orderItemsWithName && orderItemsWithName.length > 0 ? (
+                            orderItemsWithName.map((item, index) => (
                                 <tr key={index}>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.product_name}</td>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.quantity}</td>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>${item.price_each}</td>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>${(item.quantity * item.price_each).toFixed(2)}</td>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>${(item.quantity * item.price_each * 0.15).toFixed(2)}</td>
+                                    <td className="border p-2">{item.product_name}</td>
+                                    <td className="border p-2">{item.quantity}</td>
+                                    <td className="border p-2">${item.price_each.toFixed(2)}</td>
+                                    <td className="border p-2">${(item.quantity * item.price_each).toFixed(2)}</td>
+                                    <td className="border p-2">${(item.quantity * item.price_each * 0.15).toFixed(2)}</td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={5} style={{ textAlign: 'center', padding: '8px' }}>No items found.</td>
+                                <td colSpan={5} className="text-center p-4">No items found.</td>
                             </tr>
                         )}
                     </tbody>
                 </table>
-                <div style={{ textAlign: 'center' }}>
-                    <button onClick={handlePrint} style={{ backgroundColor: '#4CAF50', color: 'white', padding: '10px 20px', border: 'none', cursor: 'pointer', marginRight: '10px' }}>
-                        Print Invoice
-                    </button>
-                    <button onClick={handleSaveAsPDF} style={{ backgroundColor: '#4CAF50', color: 'white', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
+
+                <div className="flex justify-center space-x-4 mt-6">
+                    <button onClick={handleSaveAsPDF} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
                         Save as PDF
                     </button>
-                    <button onClick={onClose} style={{ backgroundColor: '#f44336', color: 'white', padding: '10px 20px', border: 'none', cursor: 'pointer', marginLeft: '10px' }}>
+                    <button onClick={onClose} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
                         Close
                     </button>
                 </div>
