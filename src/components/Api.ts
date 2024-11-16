@@ -1,8 +1,8 @@
 import { Order, OrderItem, Product, User, RegisterRequest, LoginRequest, LoginResponse, CreateOrderRequest, 
     OrdersNotFoundResponse, ApiErrorResponse } from './Types';
 
-const URL = "https://python-api-z0j4.onrender.com/"
-
+// const URL = "https://python-api-z0j4.onrender.com/"
+const URL = "https://dynamic-flow-production.up.railway.app/"
 // Utility function to handle JSON response and errors
 const handleResponse = async (response: Response) => {
     if (!response.ok) {
