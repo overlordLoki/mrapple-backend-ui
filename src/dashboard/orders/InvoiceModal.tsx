@@ -179,7 +179,7 @@ const InvoiceModal: React.FC<InvoiceProps> = ({ order, user, onClose, products }
                     <button onClick={handleSaveAsPDF} className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-600">
                         Save as PDF
                     </button>
-                    <button onClick={onClose} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-400">
+                    <button onClick={onClose} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
                         Close
                     </button>
                 </div>
