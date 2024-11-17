@@ -1,9 +1,12 @@
+// src/components/Dashboard.tsx
+
 import { useEffect, useState } from 'react';
 import InvoiceModal from './orders/InvoiceModal';
 import OrderForm from './orders/OrderForm';
 import OrderList from './orders/OrderList';
-import { Order, Product ,User } from './Types';
-import { getOrdersForUser, getProducts, createOrder ,getUserDetails} from './Api';
+import Products from './Products'; // Import the new Products component
+import { Order, Product, User } from './Types';
+import { getOrdersForUser, getProducts, createOrder, getUserDetails } from './Api';
 
 interface DashboardProps {
     userId: number;
@@ -17,7 +20,7 @@ const Dashboard = ({ userId }: DashboardProps) => {
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [user, setUser] = useState<User | null>(null);
 
-    //set user details
+    // set user details
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -46,13 +49,11 @@ const Dashboard = ({ userId }: DashboardProps) => {
                 setError(error.message);
             }
         };
-    
+
         if (user) {
             fetchOrders();
         }
     }, [user]);
-    
-    
 
     // Fetch products
     useEffect(() => {
@@ -113,19 +114,7 @@ const Dashboard = ({ userId }: DashboardProps) => {
             </div>
 
             {/* Product List */}
-            <div className="bg-white p-6 mt-6 rounded-lg shadow-lg border border-gray-300">
-                <h2 className="text-2xl font-semibold mb-4 text-center">Our Products</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    {products.map((product) => (
-                        <div key={product.product_id} className="text-center p-4 border rounded-lg shadow-md">
-                            <span className="text-4xl">{product.product_name === 'Ava' ? '🍏' : '🍎'}</span>
-                            <h3 className="text-lg font-semibold mt-2">{product.product_name}</h3>
-                            <p className="text-sm text-gray-600">{product.description}</p>
-                            <p className="mt-2 text-xl font-semibold">${product.price}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            <Products products={products} />
 
             {showInvoice && selectedOrder && user && (
                 <InvoiceModal 

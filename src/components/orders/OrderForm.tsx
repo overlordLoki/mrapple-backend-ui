@@ -117,7 +117,7 @@ const OrderForm = ({ products, handleCreateOrder, user }: OrderFormProps) => {
                     className={`px-4 py-2 rounded transition duration-200 ${
                         selectedItems.length === 0
                             ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-green-500 hover:bg-green-600 text-white'
+                            : 'bg-green-800 hover:bg-green-600 text-white'
                     }`}
                     disabled={selectedItems.length === 0}
                 >
