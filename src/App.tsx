@@ -7,8 +7,8 @@ import './index.css';
 import { useEffect, useState } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google'; // Import GoogleOAuthProvider
 
-const img = 'url("https://images.squarespace-cdn.com/content/v1/6541874d1e536d4a5a63bc9e/427caf30-d00d-4088-835b-2f6be1b3dfc4/Bostock-Apple-Harvest-Royal-Gala-070.jpg")';
-
+//const img = 'url("https://images.squarespace-cdn.com/content/v1/6541874d1e536d4a5a63bc9e/427caf30-d00d-4088-835b-2f6be1b3dfc4/Bostock-Apple-Harvest-Royal-Gala-070.jpg")';
+const img = 'url("/bg.jpg")';
 const NavigationBar = () => {
   const navigate = useNavigate();
 
