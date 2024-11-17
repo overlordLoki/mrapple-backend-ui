@@ -63,7 +63,7 @@ const OrderList = ({ orders, onDeleteOrder, onViewInvoice }: OrderListProps) => 
                             <div className="flex space-x-4">
                                 <button
                                     onClick={() => onViewInvoice(order)}
-                                    className="bg-green-800 text-white py-1 px-3 rounded hover:bg-green-700"
+                                    className="bg-green-600 text-white py-1 px-3 rounded hover:bg-green-700"
                                 >
                                     View Invoice
                                 </button>

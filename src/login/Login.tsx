@@ -100,7 +100,7 @@ const Login = ({ setUserId }: LoginProps) => {
           </div>
           <button
             type="submit"
-            className={`w-full ${loading ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'} text-white py-2 rounded transition duration-200`}
+            className={`w-full ${loading ? 'bg-gray-400' : 'bg-red-600 hover:bg-red-500'} text-white py-2 rounded transition duration-200`}
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login'}
