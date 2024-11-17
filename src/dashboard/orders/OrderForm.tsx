@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { OrderItem, Product, User, CreateOrderRequest } from '../Types';
+import { OrderItem, Product, User, CreateOrderRequest } from '../../components/Types';
 
 interface OrderFormProps {
     products: Product[];

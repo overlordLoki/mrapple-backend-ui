@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { loginUser, loginWithGoogle } from './Api';
+import { loginUser, loginWithGoogle } from '../components/Api';
 import { GoogleLogin } from '@react-oauth/google';
 
 interface LoginProps {

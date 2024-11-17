@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { deleteOrder } from '../Api';
-import { Order } from '../Types';
+import { deleteOrder } from '../../components/Api';
+import { Order } from '../../components/Types';
 
 interface OrderListProps {
     orders: Order[];

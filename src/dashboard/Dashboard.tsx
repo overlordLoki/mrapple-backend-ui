@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import InvoiceModal from './orders/InvoiceModal';
 import OrderForm from './orders/OrderForm';
 import OrderList from './orders/OrderList';
-import Products from './Products'; // Import the new Products component
-import { Order, Product, User } from './Types';
-import { getOrdersForUser, getProducts, createOrder, getUserDetails } from './Api';
+import Products from './orders/Products'; // Import the new Products component
+import { Order, Product, User } from '../components/Types';
+import { getOrdersForUser, getProducts, createOrder, getUserDetails } from '../components/Api';
 
 interface DashboardProps {
     userId: number;
