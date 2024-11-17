@@ -112,7 +112,7 @@ const OrderForm = ({ products, handleCreateOrder, user }: OrderFormProps) => {
             </div>
             <div className="flex justify-between mt-4">
                 <p className="text-xl font-semibold">Total: ${calculateTotal().toFixed(2)} 
-                <span className="text-sm text-gray-500"> (exc GST)</span>
+                <span className="text-sm text-gray-500"> (excl. GST)</span>
                     </p>
                 <button
                     onClick={handleSubmit}
