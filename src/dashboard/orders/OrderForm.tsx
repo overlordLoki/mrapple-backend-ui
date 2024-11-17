@@ -80,7 +80,7 @@ const OrderForm = ({ products, handleCreateOrder, user }: OrderFormProps) => {
     };
 
     return (
-        <div className="bg-white p-6 rounded shadow-md">
+        <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-bold mb-4">Create Order</h2>
             {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
             <div className="space-y-4">
@@ -95,7 +95,7 @@ const OrderForm = ({ products, handleCreateOrder, user }: OrderFormProps) => {
                         >
                             <div>
                                 <h3 className="text-lg font-semibold">{product.product_name}</h3>
-                                <p className="text-gray-500">${product.price.toFixed(2)}</p>
+                                <p className="text-gray-500">${product.price.toFixed(2)}/kg</p>
                             </div>
                             <input
                                 type="number"

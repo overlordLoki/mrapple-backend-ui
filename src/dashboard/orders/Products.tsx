@@ -40,7 +40,10 @@ const Products = ({ products }: ProductsProps) => {
                             </span>
                             <h3 className="text-lg font-semibold mt-2">{product.product_name}</h3>
                             <p className="text-sm text-gray-600">{product.description}</p>
-                            <p className="mt-2 text-xl font-semibold">${product.price}</p>
+                            <p className="mt-2 text-lg font-semibold">
+                                ${product.price.toFixed(2)} 
+                                <span className="text-sm text-gray-600">/kg</span>
+                            </p>
                         </div>
                     );
                 })}

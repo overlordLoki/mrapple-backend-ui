@@ -46,36 +46,38 @@ const OrderList = ({ orders, onDeleteOrder, onViewInvoice }: OrderListProps) => 
             {errorMessage && (
                 <p className="text-red-500 text-center">{errorMessage}</p>
             )}
-            {orders.length === 0 ? (
-                <p className="text-center">No orders found</p>
-            ) : (
-                orders.map((order) => (
-                    <div
-                        key={order.order_id}
-                        className="bg-white border border-gray-300 p-4 rounded shadow-md flex justify-between items-center"
-                    >
-                        <div>
-                            <h3 className="font-bold">Order ID: {order.order_id}</h3>
-                            <p>Status: {order.status}</p>
-                            <p>Total Amount: ${order.total_amount.toFixed(2)}</p>
+<div className="max-h-[37rem] overflow-y-auto space-y-4">
+{orders.length === 0 ? (
+                    <p className="text-center">No orders found</p>
+                ) : (
+                    orders.map((order) => (
+                        <div
+                            key={order.order_id}
+                            className="bg-white border border-gray-300 p-1 rounded-lg shadow-md flex justify-between items-center"
+                        >
+                            <div>
+                                <h3 className="font-bold">Order ID: {order.order_id}</h3>
+                                <p>Status: {order.status}</p>
+                                <p>Total Amount: ${order.total_amount.toFixed(2)}</p>
+                            </div>
+                            <div className="flex space-x-4">
+                                <button
+                                    onClick={() => onViewInvoice(order)}
+                                    className="bg-green-800 text-white py-1 px-3 rounded hover:bg-green-700"
+                                >
+                                    View Invoice
+                                </button>
+                                <button
+                                    onClick={() => handleDeleteOrder(order.order_id)}
+                                    className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
+                                >
+                                    Delete Order
+                                </button>
+                            </div>
                         </div>
-                        <div className="flex space-x-4">
-                            <button
-                                onClick={() => onViewInvoice(order)}
-                                className="bg-green-800 text-white py-1 px-3 rounded hover:bg-green-700"
-                            >
-                                View Invoice
-                            </button>
-                            <button
-                                onClick={() => handleDeleteOrder(order.order_id)}
-                                className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
-                            >
-                                Delete Order
-                            </button>
-                        </div>
-                    </div>
-                ))
-            )}
+                    ))
+                )}
+            </div>
 
             {/* Custom Modal for Delete Confirmation */}
             {isModalOpen && (
