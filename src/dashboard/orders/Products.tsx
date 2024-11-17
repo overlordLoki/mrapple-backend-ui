@@ -1,6 +1,6 @@
 // src/components/Products.tsx
 
-import { Product } from './Types';
+import { Product } from '../../components/Types';
 
 interface ProductsProps {
     products: Product[];
