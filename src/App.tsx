@@ -19,7 +19,7 @@ const NavigationBar = () => {
   };
 
   return (
-    <div className="bg-green-800 text-white p-4 shadow-md">
+    <div className="bg-green-700 text-white p-4 shadow-md">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
         <Link to="/dashboard" className="text-xl font-bold">Dashboard</Link>
         <div className="space-x-4">

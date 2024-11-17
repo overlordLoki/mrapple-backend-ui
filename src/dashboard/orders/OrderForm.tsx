@@ -117,7 +117,7 @@ const OrderForm = ({ products, handleCreateOrder, user }: OrderFormProps) => {
                     className={`px-4 py-2 rounded transition duration-200 ${
                         selectedItems.length === 0
                             ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-green-600 hover:bg-green-700 text-white'
+                            : 'bg-green-700 hover:bg-green-600 text-white'
                     }`}
                     disabled={selectedItems.length === 0}
                 >
@@ -139,7 +139,7 @@ const OrderForm = ({ products, handleCreateOrder, user }: OrderFormProps) => {
                         <div className="flex justify-center space-x-4">
                             <button
                                 onClick={confirmOrder}
-                                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
+                                className="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded"
                             >
                                 Confirm
                             </button>

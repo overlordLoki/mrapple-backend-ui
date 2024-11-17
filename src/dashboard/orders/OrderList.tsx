@@ -46,14 +46,15 @@ const OrderList = ({ orders, onDeleteOrder, onViewInvoice }: OrderListProps) => 
             {errorMessage && (
                 <p className="text-red-500 text-center">{errorMessage}</p>
             )}
-<div className="max-h-[37rem] overflow-y-auto space-y-4">
-{orders.length === 0 ? (
+
+            <div className="max-h-[37rem] overflow-y-auto space-y-4">
+                {orders.length === 0 ? (
                     <p className="text-center">No orders found</p>
                 ) : (
                     orders.map((order) => (
                         <div
                             key={order.order_id}
-                            className="bg-white border border-gray-300 p-1 rounded-lg shadow-md flex justify-between items-center"
+                            className="bg-white border border-gray-300 p-2 rounded-lg shadow-md flex justify-between items-center"
                         >
                             <div>
                                 <h3 className="font-bold">Order ID: {order.order_id}</h3>
@@ -63,7 +64,7 @@ const OrderList = ({ orders, onDeleteOrder, onViewInvoice }: OrderListProps) => 
                             <div className="flex space-x-4">
                                 <button
                                     onClick={() => onViewInvoice(order)}
-                                    className="bg-green-600 text-white py-1 px-3 rounded hover:bg-green-700"
+                                    className="bg-green-700 text-white py-1 px-3 rounded hover:bg-green-600"
                                 >
                                     View Invoice
                                 </button>
