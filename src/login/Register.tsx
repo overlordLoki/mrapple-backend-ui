@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../components/Api'; // Importing the API function
+import { registerUser } from '../components/Api';
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -12,7 +12,6 @@ const Register = () => {
     const [passwordError, setPasswordError] = useState('');
     const navigate = useNavigate();
 
-    // Validate password length before submitting
     const validatePassword = (password: string) => {
         if (password.length < 8) {
             setPasswordError('Password must be at least 8 characters.');
@@ -25,7 +24,11 @@ const Register = () => {
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Ensure password is valid before submitting
+        if (!username || !password || !address || !email) {
+            setErrorMessage('All fields are required.');
+            return;
+        }
+
         if (!validatePassword(password)) return;
 
         try {
@@ -43,7 +46,9 @@ const Register = () => {
                 <h2 className="text-3xl font-bold text-center mb-6">Register</h2>
                 <form onSubmit={handleRegister} className="space-y-4">
                     <div>
-                        <label htmlFor="username" className="block text-sm font-medium">Username</label>
+                        <label htmlFor="username" className="block text-sm font-medium">
+                            Username <span className="text-red-500">*</span>
+                        </label>
                         <input
                             type="text"
                             id="username"
@@ -54,7 +59,9 @@ const Register = () => {
                         />
                     </div>
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium">Password</label>
+                        <label htmlFor="password" className="block text-sm font-medium">
+                            Password <span className="text-red-500">*</span>
+                        </label>
                         <input
                             type="password"
                             id="password"
@@ -66,17 +73,22 @@ const Register = () => {
                         {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
                     </div>
                     <div>
-                        <label htmlFor="address" className="block text-sm font-medium">Address</label>
+                        <label htmlFor="address" className="block text-sm font-medium">
+                            Address <span className="text-red-500">*</span>
+                        </label>
                         <input
                             type="text"
                             id="address"
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
                             className="w-full p-2 border border-gray-300 rounded mt-1"
+                            required
                         />
                     </div>
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium">Email</label>
+                        <label htmlFor="email" className="block text-sm font-medium">
+                            Email <span className="text-red-500">*</span>
+                        </label>
                         <input
                             type="email"
                             id="email"
