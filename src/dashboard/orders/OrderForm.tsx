@@ -111,7 +111,9 @@ const OrderForm = ({ products, handleCreateOrder, user }: OrderFormProps) => {
                 })}
             </div>
             <div className="flex justify-between mt-4">
-                <p className="font-semibold">Total: ${calculateTotal().toFixed(2)}</p>
+                <p className="text-xl font-semibold">Total: ${calculateTotal().toFixed(2)} 
+                <span className="text-sm text-gray-500"> (exc GST)</span>
+                    </p>
                 <button
                     onClick={handleSubmit}
                     className={`px-4 py-2 rounded transition duration-200 ${

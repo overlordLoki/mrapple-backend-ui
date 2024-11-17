@@ -42,7 +42,7 @@ const Products = ({ products }: ProductsProps) => {
                             <p className="text-sm text-gray-600">{product.description}</p>
                             <p className="mt-2 text-lg font-semibold">
                                 ${product.price.toFixed(2)} 
-                                <span className="text-sm text-gray-600">/kg</span>
+                                <span className="text-sm text-gray-500">/kg</span>
                             </p>
                         </div>
                     );

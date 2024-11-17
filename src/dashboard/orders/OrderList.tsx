@@ -47,7 +47,7 @@ const OrderList = ({ orders, onDeleteOrder, onViewInvoice }: OrderListProps) => 
                 <p className="text-red-500 text-center">{errorMessage}</p>
             )}
 
-            <div className="max-h-[37rem] overflow-y-auto space-y-4">
+            <div className="max-h-[37rem] rounded-lg overflow-y-auto space-y-4">
                 {orders.length === 0 ? (
                     <p className="text-center">No orders found</p>
                 ) : (
