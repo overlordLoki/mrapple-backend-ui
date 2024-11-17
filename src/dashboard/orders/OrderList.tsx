@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { deleteOrder } from '../../components/Api';
+import { deleteOrder, email } from '../../components/Api';
 import { Order } from '../../components/Types';
 
 interface OrderListProps {
@@ -12,6 +12,8 @@ const OrderList = ({ orders, onDeleteOrder, onViewInvoice }: OrderListProps) => 
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+    const [isEmailSending, setIsEmailSending] = useState(false); // State for email sending
+    const [emailSuccessMessage, setEmailSuccessMessage] = useState<string | null>(null); // Success message for email
 
     const handleDeleteOrder = async (orderId: number) => {
         setSelectedOrderId(orderId);
@@ -41,10 +43,27 @@ const OrderList = ({ orders, onDeleteOrder, onViewInvoice }: OrderListProps) => 
         setSelectedOrderId(null); // Clear selected order
     };
 
+    const handleSendEmail = async (orderId: number) => {
+        setIsEmailSending(true);
+        setEmailSuccessMessage(null); // Reset success message
+        try {
+            const response = await email(orderId);
+            setEmailSuccessMessage(response.message); // Show success message
+        } catch (error: any) {
+            setErrorMessage(error.message); // Display error if email sending fails
+        } finally {
+            setIsEmailSending(false); // Reset the loading state
+        }
+    };
+
     return (
         <div className="max-w-3xl mx-auto space-y-4">
             {errorMessage && (
                 <p className="text-red-500 text-center">{errorMessage}</p>
+            )}
+
+            {emailSuccessMessage && (
+                <p className="text-green-500 text-center">{emailSuccessMessage}</p>
             )}
 
             <div className="max-h-[37rem] rounded-lg overflow-y-auto space-y-4">
@@ -67,6 +86,13 @@ const OrderList = ({ orders, onDeleteOrder, onViewInvoice }: OrderListProps) => 
                                     className="bg-green-700 text-white py-1 px-3 rounded hover:bg-green-600"
                                 >
                                     View Invoice
+                                </button>
+                                <button
+                                    onClick={() => handleSendEmail(order.order_id)}
+                                    disabled={isEmailSending}
+                                    className={`bg-blue-500 text-white py-1 px-3 rounded ${isEmailSending ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+                                >
+                                    {isEmailSending ? 'Sending...' : 'Send Invoice Email'}
                                 </button>
                                 <button
                                     onClick={() => handleDeleteOrder(order.order_id)}

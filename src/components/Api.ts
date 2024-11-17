@@ -14,6 +14,27 @@ const handleResponse = async (response: Response) => {
     return response.json();
 }
 
+export const email = async (orderid: number): Promise<{ message: string }> => {
+    try {
+        const response = await fetch(`${URL}email/send-invoice/${orderid}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+        const data = await handleResponse(response);
+        return data;
+    } catch (error) {
+        if (error instanceof Error) {
+            throw new Error('Failed to send invoice: ' + error.message);
+        } else {
+            throw new Error('Failed to send invoice: An unknown error occurred');
+        }
+    }
+};
+
+
 // Add this function to Api.ts to handle the Google login
 export const loginWithGoogle = async (token: string): Promise<LoginResponse> => {
     const response = await fetch(`${URL}login/google`, {
