@@ -1,5 +1,3 @@
-// src/components/Products.tsx
-
 import { Product } from '../../components/Types';
 
 interface ProductsProps {
@@ -25,7 +23,10 @@ const Products = ({ products }: ProductsProps) => {
                     const imageSrc = productImages[product.product_name];
 
                     return (
-                        <div key={product.product_id} className="text-center p-4 border rounded-lg shadow-md">
+                        <div 
+                            key={product.product_id} 
+                            className="bg-white text-center p-4 border rounded-lg shadow-md"
+                        >
                             <span className="text-4xl">
                                 {imageSrc ? (
                                     <img 
