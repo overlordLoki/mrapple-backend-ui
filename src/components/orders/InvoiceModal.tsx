@@ -1,6 +1,6 @@
 import React from 'react';
 import { jsPDF } from 'jspdf';
-import { Order, OrderItem, User, Product } from './Types';
+import { Order, OrderItem, User, Product } from '../Types';
 
 interface InvoiceProps {
     order: Order;

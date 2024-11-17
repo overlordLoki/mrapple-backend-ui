@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import InvoiceModal from './InvoiceModal';
-import OrderForm from './OrderForm';
-import OrderList from './OrderList';
+import InvoiceModal from './orders/InvoiceModal';
+import OrderForm from './orders/OrderForm';
+import OrderList from './orders/OrderList';
 import { Order, Product ,User } from './Types';
 import { getOrdersForUser, getProducts, createOrder ,getUserDetails} from './Api';
 
@@ -31,16 +31,15 @@ const Dashboard = ({ userId }: DashboardProps) => {
         fetchUser();
     }, [userId]);
 
-    // Fetch user orders
     useEffect(() => {
         const fetchOrders = async () => {
             try {
                 if (user?.user_id !== undefined) {
                     const data = await getOrdersForUser(user.user_id);
-                    if ('detail' in data) {
-                        setOrders([]); // No orders found
+                    if (Array.isArray(data)) {
+                        setOrders(data); // Data will be an empty array if no orders are found
                     } else {
-                        setOrders(data); // Set orders if found
+                        setError('No orders found');
                     }
                 }
             } catch (error: any) {
@@ -51,7 +50,8 @@ const Dashboard = ({ userId }: DashboardProps) => {
         if (user) {
             fetchOrders();
         }
-    }, [user]); // Trigger on user change
+    }, [user]);
+    
     
 
     // Fetch products

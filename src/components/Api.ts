@@ -1,8 +1,10 @@
+// src/components/Api.ts
 import { Order, OrderItem, Product, User, RegisterRequest, LoginRequest, LoginResponse, CreateOrderRequest, 
     OrdersNotFoundResponse, ApiErrorResponse } from './Types';
 
-// const URL = "https://python-api-z0j4.onrender.com/"
-const URL = "https://dynamic-flow-production.up.railway.app/"
+const URL = "https://dynamic-flow-production.up.railway.app/" //production URL
+//const URL = "http://localhost:8000/" //for local testing
+
 // Utility function to handle JSON response and errors
 const handleResponse = async (response: Response) => {
     if (!response.ok) {
@@ -11,6 +13,19 @@ const handleResponse = async (response: Response) => {
     }
     return response.json();
 }
+
+// Add this function to Api.ts to handle the Google login
+export const loginWithGoogle = async (token: string): Promise<LoginResponse> => {
+    const response = await fetch(`${URL}login/google`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+    });
+    return handleResponse(response);
+};
+
 
 // Register a new user
 export const registerUser = async (user: RegisterRequest): Promise<User> => {

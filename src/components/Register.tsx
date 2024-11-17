@@ -1,39 +1,39 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const URL = 'https://mrapple-backend.overlord-loki.com/';
+import { registerUser } from './Api'; // Importing the API function
 
 const Register = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [address, setAddress] = useState('');
+    const [email, setEmail] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [passwordError, setPasswordError] = useState('');
     const navigate = useNavigate();
+
+    // Validate password length before submitting
+    const validatePassword = (password: string) => {
+        if (password.length < 8) {
+            setPasswordError('Password must be at least 8 characters.');
+            return false;
+        }
+        setPasswordError('');
+        return true;
+    };
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Ensure password is valid before submitting
+        if (!validatePassword(password)) return;
+
         try {
-            const response = await fetch(`${URL}register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_name: username, password, address }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                // Success response
-                setSuccessMessage('Registration successful! Redirecting to login...');
-                setTimeout(() => navigate('/login'), 2000);
-            } else {
-                // Error response
-                setErrorMessage(data.detail || 'Registration failed. Please try again.');
-            }
-        } catch (error) {
-            console.error(error);
-            setErrorMessage('An error occurred during registration. Please try again later.');
+            await registerUser({ user_name: username, password, address, email });
+            setSuccessMessage('Registration successful! Redirecting to login...');
+            setTimeout(() => navigate('/login'), 2000);
+        } catch (error: any) {
+            setErrorMessage(error.message || 'Registration failed. Please try again.');
         }
     };
 
@@ -63,6 +63,7 @@ const Register = () => {
                             className="w-full p-2 border border-gray-300 rounded mt-1"
                             required
                         />
+                        {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
                     </div>
                     <div>
                         <label htmlFor="address" className="block text-sm font-medium">Address</label>
@@ -72,6 +73,17 @@ const Register = () => {
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
                             className="w-full p-2 border border-gray-300 rounded mt-1"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded mt-1"
+                            required
                         />
                     </div>
                     <button 
