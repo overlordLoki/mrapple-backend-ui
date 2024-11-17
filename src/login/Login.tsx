@@ -68,7 +68,7 @@ const Login = ({ setUserId }: LoginProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="bg-white p-8 rounded shadow-lg max-w-md w-full">
         <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
         <form onSubmit={handleLogin} className="space-y-4">
@@ -100,7 +100,7 @@ const Login = ({ setUserId }: LoginProps) => {
           </div>
           <button
             type="submit"
-            className={`w-full ${loading ? 'bg-gray-400' : 'bg-red-600 hover:bg-red-500'} text-white py-2 rounded transition duration-200`}
+            className={`w-full ${loading ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'} text-white py-2 rounded transition duration-200`}
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login'}
