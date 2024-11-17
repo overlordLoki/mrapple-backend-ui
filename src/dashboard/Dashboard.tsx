@@ -1,5 +1,3 @@
-// src/components/Dashboard.tsx
-
 import { useEffect, useState } from 'react';
 import InvoiceModal from './orders/InvoiceModal';
 import OrderForm from './orders/OrderForm';
@@ -20,7 +18,7 @@ const Dashboard = ({ userId }: DashboardProps) => {
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [user, setUser] = useState<User | null>(null);
 
-    // set user details
+    // Set user details
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -89,7 +87,7 @@ const Dashboard = ({ userId }: DashboardProps) => {
         <div className="min-h-screen bg-cover bg-center p-6" style={{ backgroundImage: 'url(/path-to-your-image.jpg)' }}>
             <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* New Order Section */}
-                <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-300">
+                <div className="bg-white bg-opacity-50 p-6 rounded-lg shadow-lg border border-gray-300">
                     <h2 className="text-2xl font-semibold mb-4 text-center">Create New Order</h2>
                     <OrderForm 
                         products={products} 
@@ -99,7 +97,7 @@ const Dashboard = ({ userId }: DashboardProps) => {
                 </div>
 
                 {/* View Orders Section */}
-                <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-300">
+                <div className="bg-white bg-opacity-50 p-6 rounded-lg shadow-lg border border-gray-300">
                     <h2 className="text-2xl font-semibold mb-4 text-center">Your Orders</h2>
                     {error && <p className="text-red-500 text-center mb-4">{error}</p>}
                     <OrderList
@@ -113,8 +111,12 @@ const Dashboard = ({ userId }: DashboardProps) => {
                 </div>
             </div>
 
-            {/* Product List */}
-            <Products products={products} />
+            {/* Product List with transparency */}
+            <div className="container mx-auto grid grid-cols-1 col-span-2 md:grid-cols-2 gap-6 mt-6">
+                <div className="col-span-2">
+                    <Products products={products} />
+                </div>
+            </div>
 
             {showInvoice && selectedOrder && user && (
                 <InvoiceModal 
